@@ -34,7 +34,11 @@
     }
     .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
     .brand{display:flex; align-items:center; gap:10px; font-weight:950;}
-    .brand .mark{width:18px; height:18px;}
+    .brand-ear{
+      width: 44px;   /* 귀 크기 */
+      height: auto;
+      display: block;
+    }
     .brand .name{color:var(--orange); font-size:18px;}
 
     .menu{display:flex; align-items:center; gap:22px; font-size:12px;}
@@ -1150,7 +1154,7 @@
       <div class="nav">
         <!-- 로고(좌상단) 클릭 = home -->
         <a class="brand" href="#home" aria-label="Go Home">
-          <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <img class="brand-ear" src="./assets/ear.png" alt="ear" />
             <path d="M12 3.2c1.3 0 2.4 1.05 2.4 2.35S13.3 8 12 8s-2.4-1.25-2.4-2.45S10.7 3.2 12 3.2Z" fill="#111"/>
             <path d="M18.8 6.7c.92.92.85 2.43-.17 3.36-1.02.93-2.54.93-3.46 0-.92-.92-.85-2.43.17-3.36 1.02-.93 2.54-.93 3.46 0Z" fill="#111"/>
             <path d="M20.8 13c0 1.3-1.25 2.4-2.45 2.4S15.9 14.3 15.9 13s1.25-2.4 2.45-2.4 2.45 1.1 2.45 2.4Z" fill="#111"/>
@@ -1159,7 +1163,6 @@
             <path d="M5.4 19.5c-.92-.92-.85-2.43.17-3.36 1.02-.93 2.54-.93 3.46 0 .92.92.85 2.43-.17 3.36-1.02.93-2.54.93-3.46 0Z" fill="#111"/>
             <path d="M3.2 13c0-1.3 1.25-2.4 2.45-2.4S8.1 11.7 8.1 13s-1.25 2.4-2.45 2.4S3.2 14.3 3.2 13Z" fill="#111"/>
             <path d="M5.2 6.7c.92-.92 2.43-.85 3.36.17.93 1.02.93 2.54 0 3.46-.92.92-2.43.85-3.36-.17-.93-1.02-.93-2.54 0-3.46Z" fill="#111"/>
-          </svg>
           <span class="name">HopFit</span>
         </a>
 
@@ -1201,7 +1204,7 @@
         <article class="card">
           <div class="thumb">
             <img alt="Push up"
-              src="./assets/push.png">
+              src="./assets/frank.png">
             <span class="badge">Intermediate</span>
           </div>
           <div class="card-body">
@@ -1216,13 +1219,13 @@
 
         <article class="card">
           <div class="thumb">
-            <img alt="Sit up"
-              src="./assets/sit.png">
+            <img alt="Lunge"
+              src="./assets/legsitdown.png">
             <span class="badge">Beginner</span>
           </div>
           <div class="card-body">
             <div class="card-info">
-              <h3>Sit up</h3>
+              <h3>Lunge</h3>
               <p>20 Sit up a day</p>
               <a class="link" href="#">Start to action →</a>
             </div>
@@ -1232,13 +1235,13 @@
 
         <article class="card">
           <div class="thumb">
-            <img alt="Knee push up"
-              src="./assets/frank.png">
+            <img alt="Crunch"
+              src="./assets/body.png">
             <span class="badge">Beginner</span>
           </div>
           <div class="card-body">
             <div class="card-info">
-              <h3>Knee push up</h3>
+              <h3>Crunch</h3>
               <p>20 Sit up a day</p>
               <a class="link" href="#">Start to action →</a>
             </div>
@@ -1922,4 +1925,5 @@
   </script>
 </body>
 </html>
+
 
