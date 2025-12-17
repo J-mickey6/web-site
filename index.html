@@ -184,8 +184,14 @@
     .daypill.active{background:#111; color:#fff;}
     .result-title{margin-top:28px; font-size:18px; font-weight:950;}
     .radar-wrap{display:flex; justify-content:center; margin-top:10px;}
-    .widgets{margin-top:18px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
-    .wcard{
+    /* 수정 */
+    .widgets{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(4, 260px); /* 🔥 카드 가로폭 고정 */
+      gap:14px;
+      justify-content:center;                  /* 가운데 정렬 */
+    }
       border-radius:14px;
       border:1px solid #ececec;
       background:#fff;
@@ -1148,6 +1154,35 @@
       }
     }
 
+    /* ===== 모바일 수정 ===== */
+    @media (max-width: 768px) {
+      /* 1. 랭킹 리스트의 칸 너비를 모바일에 맞게 재조정 */
+      .rank-row {
+        /* 메달(45px) / 캐릭터(55px) / 이름(자동) / 그래프(나머지) */
+        grid-template-columns: 45px 55px auto 1fr;
+        gap: 10px;
+      }
+
+      /* 2. 그래프 바의 고정 넓이(530px)를 해제하고 부모 크기에 맞춤 */
+      .barwrap {
+        width: 100% !important; /* !important로 기존 530px 덮어쓰기 */
+        height: 30px; /* 높이도 살짝 줄임 */
+      }
+
+      /* 3. 텍스트 및 아이콘 크기 조절 */
+      .rname {
+        font-size: 14px; /* 이름 글자 크기 축소 */
+        white-space: nowrap; /* 이름 줄바꿈 방지 */
+      }
+      .barlabel {
+        font-size: 14px; /* 그래프 안 숫자 크기 축소 */
+      }
+      .arm-icon {
+        width: 20px; /* 팔 아이콘 크기 축소 */
+        right: 4px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1930,6 +1965,7 @@
   </script>
 </body>
 </html>
+
 
 
 
