@@ -77,36 +77,51 @@
     .dash-title .mini{font-size:20px; vertical-align:middle; margin:0 4px;}
     .section-title{margin-top:20px; font-size:20px; font-weight:950;}
 
-    /* ===== HOME progress bar rabbit (bar 앞에 위치) ===== */
-
+    /* ===== HOME Progress (두번째 이미지 스타일로 고정) ===== */
     .progress-wrap{
-      position: relative;
+      margin-top:10px;
+      border:1px solid #cfcfcf;
+      border-radius:10px;
+      height:60px;
+      position:relative;
+      overflow:hidden;
+      background:#fff;
     }
 
+    /* 주황색 채움 */
     .progress-fill{
-      position: relative;
-      height: 100%;
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width: calc(var(--p, 65) * 1%);
+      background: var(--orange);
     }
 
-    .progress-rabbit{
-      position: absolute;
-      right: -24px;          /* 🔥 바 “바로 앞” */
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      z-index: 3;
+    /* % 텍스트 (가운데) */
+    .progress-text{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:950;
+      font-size:28px;
+      z-index:3;
+      pointer-events:none;
     }
 
+    /* 🐰 토끼: 주황색 바 끝(경계) 바로 앞에 */
     .progress-rabbit{
       position:absolute;
       top:50%;
-      left: calc(65% - 22px);   /* 진행률 끝 위치 */
+      left: calc(var(--p, 65) * 1% + 10px); /* 22px = 토끼 폭(44)의 절반 */
       transform: translateY(-50%);
-      width: 44px;
-      height: auto;
-      z-index: 3;
-      pointer-events: none;
+      width:35px;
+      height:auto;
+      z-index:4;
+      pointer-events:none;
     }
+
+
     .progress-fill{height:100%; width:65%; background:var(--orange);}
     .progress-knob{
       position:absolute; left:calc(65% - 24px); top:50%;
@@ -174,7 +189,7 @@
       border-radius:14px;
       border:1px solid #ececec;
       background:#fff;
-      overflow:hidden;
+      overflow:visible;
       min-height:120px;
       display:flex;
       flex-direction:column;
@@ -209,6 +224,33 @@
       display:flex;
       flex-direction:column;
       gap:10px;
+      overflow: visible;   /* 🔥 이게 핵심 */
+    }
+
+    /* 토끼 + Good! */
+    .hr-badge{
+      position: absolute;
+      top: +433px;          /* 카드 위로 띄움 */
+      right: 1185px;           /* 왼쪽 정렬 */
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 500;
+    }
+
+    /* 토끼 크기 */
+    .hr-badge img{
+      width: 64px;
+      height: auto;
+      display: block;
+    }
+
+    /* Good! 텍스트 */
+    .good-text{
+      font-size: 26px;
+      font-weight: 950;
+      color: var(--orange);
+      line-height: 1;
     }
 
     /* 제목 줄 */
@@ -871,6 +913,155 @@
       .shop-grid .pbody div{ word-break:keep-all; }
     }
 
+    /* ===== NEW MY PAGE STYLES ===== */
+    .my-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* 공통 카드 스타일 */
+    .my-card {
+      background: #fff;
+      border: 1px solid #e7e7e7;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    /* 왼쪽 프로필 섹션 */
+    .profile-header {
+      position: relative;
+    }
+    .settings-btn {
+      position: absolute; right: 0; top: 0;
+      font-size: 18px; color: #999; cursor: pointer;
+    }
+    .profile-img {
+      width: 100px; height: 100px;
+      background: #e3e8ef;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .profile-img img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .profile-name { font-size: 20px; font-weight: 950; margin-bottom: 4px; }
+    .profile-email { font-size: 12px; color: #888; margin-bottom: 16px; }
+
+    .tags-row {
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .my-tag {
+      padding: 6px 12px; border-radius: 99px;
+      font-size: 11px; font-weight: 800;
+      border: 1px solid;
+    }
+    .tag-orange { background: #fff0eb; color: #ff6a2a; border-color: #ffdcc9; }
+    .tag-green { background: #eafbf4; color: #2ea078; border-color: #ccefe3; }
+
+    .stats-row {
+      display: flex; justify-content: space-between;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 20px;
+    }
+    .stat-item { flex: 1; }
+    .stat-num { font-size: 16px; font-weight: 950; display: block; margin-bottom: 4px; }
+    .stat-label { font-size: 10px; color: #888; line-height: 1.2; }
+
+    /* 오른쪽 친구 섹션 */
+    .friend-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .fh-title { font-size: 16px; font-weight: 950; }
+    .add-btn {
+      background: #ff6a2a; color: #fff; border: 0;
+      padding: 6px 12px; border-radius: 8px;
+      font-size: 11px; font-weight: 800; cursor: pointer;
+    }
+
+    .friend-box {
+      border: 1px solid #f0f0f0;
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .friend-info { margin-bottom: 20px; }
+    .friend-img {
+      width: 80px; height: 80px;
+      background: #fdf2f5; border-radius: 50%;
+      margin: 0 auto 10px;
+      overflow: hidden;
+    }
+    .friend-img img { width: 100%; height: 100%; object-fit: cover; }
+    .friend-name { font-size: 18px; font-weight: 950; }
+    .friend-badge {
+      display: inline-block; background: #fff0eb; color: #ff6a2a;
+      font-size: 10px; padding: 2px 6px; border-radius: 6px;
+      margin-left: 6px; border: 1px solid #ffdcc9; vertical-align: middle;
+    }
+    .f-action-row {
+      display: flex; gap: 12px;
+    }
+    .f-btn {
+      flex: 1; padding: 14px 0;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 900; font-size: 13px;
+    }
+    .f-btn.blue { background: #eaf2ff; color: #2b77ea; }
+    .f-btn.orange { background: #fff0eb; color: #ff6a2a; }
+    .f-val { display: block; font-size: 12px; font-weight: 500; margin-top: 4px; color: #555; }
+
+    /* 하단 리스트 (Momentum / Purchase) */
+    .bottom-section { margin-top: 32px; }
+    .section-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .sh-title { font-size: 18px; font-weight: 950; }
+    
+    .list-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-radius: 12px; margin-bottom: 12px;
+    }
+    
+    /* Momentum Colors */
+    .bg-blue { background: #eaf2ff; }
+    .bg-green { background: #eafbf4; }
+    .bg-orange { background: #fff0eb; }
+    
+    .lc-left { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 14px; }
+    .lc-icon { font-size: 16px; }
+    .lc-right { font-weight: 900; font-size: 14px; }
+    
+    /* Purchase Style */
+    .purchase-card {
+      background: #fff; border: 1px solid #eee;
+      padding: 14px 18px; border-radius: 12px; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pc-info { display: flex; align-items: center; gap: 12px; }
+    .pc-img { width: 32px; height: 32px; object-fit: contain; }
+    .pc-text h4 { margin: 0; font-size: 13px; font-weight: 950; }
+    .pc-text p { margin: 2px 0 0; font-size: 11px; color: #888; }
+    .pc-price { display: flex; align-items: center; gap: 4px; font-weight: 900; font-size: 13px; color: #ff6a2a; }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;
+    }
+    .total-label { font-size: 16px; font-weight: 950; }
+    .total-val { font-size: 20px; font-weight: 950; color: #111; display:flex; align-items:center; gap:6px;}
+
+    /* 모바일 대응 */
+    @media (max-width: 768px) {
+      .my-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+
   </style>
 </head>
 
@@ -909,9 +1100,8 @@
   <main id="home" class="page active">
     <div class="container page-pad">
       <div class="dash-title">
-        Name <span class="mini">⚙️</span>
-        Easy to stretch at home, <span class="mini">🏠</span> your<br/>
-        muscle mass 〜 Have another healthy day <span class="mini">≋</span>
+        Sophie! Easy to stretch at home<span class="mini">🏠,</span> <br/>
+        your muscle mass Have another healthy day <span class="mini">≋</span>
       </div>
 
       <div class="section-title">Today Plan</div>
@@ -933,7 +1123,7 @@
         <article class="card">
           <div class="thumb">
             <img alt="Push up"
-              src="https://images.unsplash.com/photo-1599058917765-0f7f3f3c1b1b?auto=format&fit=crop&w=1200&q=70">
+              src="./assets/push.png">
             <span class="badge">Intermediate</span>
           </div>
           <div class="card-body">
@@ -949,7 +1139,7 @@
         <article class="card">
           <div class="thumb">
             <img alt="Sit up"
-              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=70">
+              src="./assets/sit.png">
             <span class="badge">Beginner</span>
           </div>
           <div class="card-body">
@@ -965,7 +1155,7 @@
         <article class="card">
           <div class="thumb">
             <img alt="Knee push up"
-              src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=70">
+              src="./assets/frank.png">
             <span class="badge">Beginner</span>
           </div>
           <div class="card-body">
@@ -1047,6 +1237,12 @@
       <!-- widgets -->
       <section class="widgets" aria-label="Daily widgets">
         <div class="wcard hr">
+          <!-- 🐰 Rabbit + Good! -->
+          <div class="hr-badge">
+            <img src="./assets/rabbit.png" alt="rabbit" />
+            <span class="good-text">Good!</span>
+          </div>
+
           <div class="wtitle">
             <span class="ico">💓</span>
             <span>Hearth Rate</span>
@@ -1481,45 +1677,130 @@
 
   <!-- MY -->
   <main id="my" class="page">
-    <div class="container page-pad" style="text-align:center;">
-      <div class="my-top">
-        <div>
-          <div class="pfp">🧑‍🦳</div>
-          <div class="my-email">kgeongang@example.com</div>
-        </div>
+    <div class="container page-pad">
+      
+      <div class="my-grid">
+        
+        <article class="my-card">
+          <div class="profile-header">
+            <div class="settings-btn">⚙️</div>
+            <div class="profile-img">
+              <img src="./assets/grandfather.png" alt="Grandfather Profile">
+            </div>
+            <div class="profile-name">Grandpa</div>
+            <div class="profile-email">grandpa@example.com</div>
+          </div>
 
-        <div class="chips">
-          <div class="chip">Zeeland Rank 3rd<br/>Reward - 3000 coin</div>
-          <div class="chip">Wife<br/>Squat 30 Set<br/>Walk 15,000 Step</div>
-        </div>
+          <div class="tags-row">
+            <span class="my-tag tag-orange">Zeeland Rank 3rd</span>
+            <span class="my-tag tag-green">Reward - 3000 coin</span>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num">156 day</span>
+              <span class="stat-label">continuous<br>exercise</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">240g</span>
+              <span class="stat-label">an increase<br>in muscle mass</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">342</span>
+              <span class="stat-label">Number<br>of exercises</span>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <div class="friend-header">
+            <div class="fh-title">Friends activity</div>
+            <button class="add-btn">+ Add friends</button>
+          </div>
+
+          <div class="my-card friend-box" style="padding: 30px 20px;">
+            <div class="friend-info">
+              <div class="friend-img">
+                <img src="./assets/grandmother.png" alt="Grandmother Profile">
+              </div>
+              <div style="margin-top:10px;">
+                <span class="friend-name">Wife</span>
+                <span class="friend-badge">Family ♡</span>
+              </div>
+              <div style="font-size:12px; margin-top:20px; text-align:left; color:#111; font-weight:600;">Today</div>
+            </div>
+
+            <div class="f-action-row">
+              <div class="f-btn blue">
+                <div>👟 Walk</div>
+                <span class="f-val">15,000 Step</span>
+              </div>
+              <div class="f-btn orange">
+                <div>🏋️ Squat</div>
+                <span class="f-val">30 Set</span>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
 
-      <button class="addfriends">+ add friends</button>
-
-      <div class="divider" style="width:min(520px,92vw); margin-left:auto; margin-right:auto;"></div>
-
-      <button class="bigcta">
-        <span style="font-size:30px;">✓</span>
-        <span>JUST DO IT!!!</span>
-      </button>
-
-      <div class="my-cards">
-        <div class="note">
-          <h4>Momentum</h4>
-          <ul>
-            <li>Walk 20,000 Step</li>
-            <li>Running 30 min</li>
-            <li>Squat 20 Set</li>
-          </ul>
+      <div class="my-grid bottom-section">
+        
+        <div>
+          <div class="section-head">
+            <span class="sh-title">Momentum</span>
+            <span class="my-tag tag-green" style="border:0;">Active</span>
+          </div>
+          
+          <div class="list-card bg-blue">
+            <div class="lc-left"><span class="lc-icon">👟</span> Walk</div>
+            <div class="lc-right">20,000 Step</div>
+          </div>
+          <div class="list-card bg-green">
+            <div class="lc-left"><span class="lc-icon">🏃‍♂️</span> Running</div>
+            <div class="lc-right">30 min</div>
+          </div>
+          <div class="list-card bg-orange">
+            <div class="lc-left"><span class="lc-icon">🏋️</span> Squat</div>
+            <div class="lc-right">20 Set</div>
+          </div>
         </div>
-        <div class="note">
-          <h4>Purchase</h4>
-          <ul>
-            <li>Beef 320g</li>
-            <li>Onion 4pcs</li>
-            <li>Carrot 5EA</li>
-          </ul>
+
+        <div>
+          <div class="section-head">
+            <span class="sh-title">Purchase</span>
+            <span class="my-tag tag-orange" style="border:0;">🎫 Use coins</span>
+          </div>
+
+          <div class="purchase-card">
+            <div class="pc-info">
+              <div style="font-size:24px;">🥩</div> <div class="pc-text"><h4>Beef</h4><p>320g</p></div>
+            </div>
+            <div class="pc-price">🪙 150</div>
+          </div>
+
+          <div class="purchase-card">
+            <div class="pc-info">
+              <div style="font-size:24px;">🧅</div>
+              <div class="pc-text"><h4>Onion</h4><p>4Pcs</p></div>
+            </div>
+            <div class="pc-price">🪙 20</div>
+          </div>
+
+          <div class="purchase-card">
+            <div class="pc-info">
+              <div style="font-size:24px;">🥕</div>
+              <div class="pc-text"><h4>Carrot</h4><p>5EA</p></div>
+            </div>
+            <div class="pc-price">🪙 25</div>
+          </div>
+
+          <div class="total-row">
+            <span class="total-label">Total used coins</span>
+            <span class="total-val"><span style="color:#ff6a2a; font-size:18px;">🪙</span> 195</span>
+          </div>
         </div>
+
       </div>
 
       <div class="divider"></div>
@@ -1530,6 +1811,7 @@
             <a href="#" aria-label="Instagram">⌁</a>
             <a href="#" aria-label="LinkedIn">in</a>
             <a href="#" aria-label="X">X</a>
+            <a href="#" aria-label="Mail">✉</a>
           </div>
         </div>
       </footer>
