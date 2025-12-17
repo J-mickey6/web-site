@@ -1,0 +1,1564 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HopFit</title>
+  <!-- CSS code -->
+  <style>
+    :root{
+      --orange:#ff6a2a;
+      --text:#0b0b0b;
+      --muted:#7b7b7b;
+      --line:#e9e9e9;
+      --bg:#ffffff;
+      --card:#ffffff;
+      --shadow: 0 10px 22px rgba(0,0,0,.08);
+      --soft:#f6f3f0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, "Apple SD Gothic Neo", sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+    .container{width:min(1060px, 92vw); margin:0 auto;}
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:saturate(180%) blur(8px);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:950;}
+    .brand .mark{width:18px; height:18px;}
+    .brand .name{color:var(--orange); font-size:18px;}
+
+    .menu{display:flex; align-items:center; gap:22px; font-size:12px;}
+    .menu a{opacity:.95}
+    .menu a:hover{opacity:1; text-decoration:underline}
+    .menu a.active{font-weight:900; text-decoration:underline;}
+    .pill{
+      height:30px; padding:0 12px; border-radius:10px;
+      background:var(--orange); color:#fff; font-weight:900;
+      display:inline-flex; align-items:center; justify-content:center; font-size:12px;
+    }
+
+    /* Pages */
+    .page{display:none; min-height:calc(100vh - 72px);}
+    .page.active{display:block;}
+    .page-pad{padding:22px 0 0;}
+    .divider{border-top:1px solid #e6e6e6; margin-top:26px;}
+
+    /* Footer */
+    footer{
+      border-top:1px solid var(--line);
+      padding:14px 0;
+      margin-top:24px;
+    }
+    .footer{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; flex-wrap:wrap;
+    }
+    .foot-left{font-size:12px; font-weight:900;}
+    .social{display:flex; gap:12px; align-items:center; color:#2a2a2a; font-size:14px;}
+    .social a{
+      width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:8px; border:1px solid #ececec; background:#fff;
+    }
+
+    /* ===== HOME (Today Plan) ===== */
+    .dash-title{
+      font-size:28px; font-weight:950; letter-spacing:-.6px; line-height:1.15;
+    }
+    .dash-title .mini{font-size:20px; vertical-align:middle; margin:0 4px;}
+    .section-title{margin-top:20px; font-size:20px; font-weight:950;}
+
+    /* ===== HOME progress bar rabbit (bar 앞에 위치) ===== */
+
+    .progress-wrap{
+      position: relative;
+    }
+
+    .progress-fill{
+      position: relative;
+      height: 100%;
+    }
+
+    .progress-rabbit{
+      position: absolute;
+      right: -24px;          /* 🔥 바 “바로 앞” */
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      z-index: 3;
+    }
+
+    .progress-rabbit{
+      position:absolute;
+      top:50%;
+      left: calc(65% - 22px);   /* 진행률 끝 위치 */
+      transform: translateY(-50%);
+      width: 44px;
+      height: auto;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .progress-fill{height:100%; width:65%; background:var(--orange);}
+    .progress-knob{
+      position:absolute; left:calc(65% - 24px); top:50%;
+      transform:translateY(-50%);
+      width:52px; height:52px; border-radius:999px;
+      background:#d9d9d9; border:6px solid #fff;
+      box-shadow:0 8px 18px rgba(0,0,0,.10);
+    }
+    .progress-text{
+      position:absolute; left:0; right:0; top:50%;
+      transform:translateY(-50%);
+      text-align:center; font-weight:950; font-size:28px;
+    }
+    .subhead{margin-top:14px; font-weight:950; font-size:12px;}
+    .subdesc{margin-top:6px; color:var(--muted); font-size:11px;}
+
+    .grid3{margin-top:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+    .card{
+      background:var(--card);
+      border:1px solid #e7e7e7;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+    }
+    .thumb{position:relative; height:150px; overflow:hidden; background:#f3f3f3;}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+    .badge{
+      position:absolute; left:10px; bottom:10px;
+      background:#111; color:#fff; font-size:10px;
+      padding:3px 7px; border-radius:6px; font-weight:900; opacity:.95;
+    }
+    .card-body{padding:14px; display:flex; gap:12px; justify-content:space-between; align-items:flex-start;}
+    .card-info h3{margin:0; font-size:14px; font-weight:950;}
+    .card-info p{margin:8px 0 0; color:var(--muted); font-size:11px;}
+    .card-info .link{margin-top:10px; display:inline-flex; gap:6px; align-items:center; font-size:11px; font-weight:950;}
+    .stamp{
+      width:66px; height:66px; border-radius:999px;
+      border:2px solid rgba(255,106,42,.6);
+      color:rgba(255,106,42,.85);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:950; font-size:12px;
+      transform:rotate(-12deg);
+      margin-top:8px;
+      background:rgba(255,106,42,.05);
+      flex:0 0 auto;
+    }
+
+    /* ===== RESULT (Calendar + Radar + Widgets) ===== */
+    .center-title{font-size:22px; font-weight:950; text-align:center; margin-top:6px;}
+    .weekbar{
+      margin:14px auto 0;
+      display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
+    }
+    .daypill{
+      width:44px; height:44px; border-radius:8px;
+      background:var(--orange); color:#111;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-weight:950; font-size:12px;
+    }
+    .daypill.active{background:#111; color:#fff;}
+    .result-title{margin-top:28px; font-size:18px; font-weight:950;}
+    .radar-wrap{display:flex; justify-content:center; margin-top:10px;}
+    .widgets{margin-top:18px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+    .wcard{
+      border-radius:14px;
+      border:1px solid #ececec;
+      background:#fff;
+      overflow:hidden;
+      min-height:120px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:12px;
+    }
+    .wtitle{display:flex; align-items:center; gap:8px; font-weight:950;}
+    .wtitle .ico{
+      width:30px; height:30px; border-radius:10px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:#ffe8de; border:1px solid #ffd3bf;
+      font-weight:950;
+    }
+    .wsmall{color:var(--muted); font-size:11px; margin-top:6px;}
+    .spark{
+      height:46px; display:flex; align-items:flex-end; gap:3px; margin-top:10px;
+    }
+    /* 공통 막대 */
+    .bar{
+      width:6px;
+      border-radius:6px;
+    }
+
+    /* Heart Rate 막대 색 */
+    /* 카드 배경(핑크) */
+    .wcard.hr{
+      background:#ffe8ee;
+      border-radius:14px;
+      padding:14px;
+      border:1px solid #f3d7de;
+      min-height:140px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    /* 제목 줄 */
+    .wtitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+    }
+    .ico{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#ffd6df;
+      border:1px solid #f6b9c7;
+    }
+
+    /* ✅ 하얀 배경 박스 */
+    .chart-box{
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      height:62px;              /* ← 여기 높이가 핵심(너무 작으면 잘림) */
+      overflow:visible;         /* ← 잘림 방지 */
+      border:1px solid #f1f1f1;
+      display:flex;
+      align-items:center;       /* 중앙 정렬 */
+    }
+
+    /* 막대 컨테이너 */
+    .spark.wave{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;       /* ✅ 중앙 기준 */
+      gap:4px;
+    }
+
+    /* 막대 */
+    .spark.wave .bar{
+      width:6px;
+      height:calc(var(--h) * 1px);             /* 개별 높이 */
+      transform:translateY(calc(var(--y) * 1px)); /* 위/아래 이동 */
+      background:#ff3b3b;
+      border-radius:999px;
+    }
+
+    /* 오른쪽 아래 Bpm */
+    .bpm{
+      text-align:right;
+      font-size:17px;
+      font-weight:900;
+      color:#111;
+      margin-top:auto;
+    }
+
+    /* Sleep 막대 색 */
+    /* ===== 2) Sleep (크기/구성 수정 + calories 박스) ===== */
+    .wcard.sleep{
+      background:#efe9ff;
+      border-color:#e0d8ff;
+      min-height:150px; /* ✅ 크기 안정 */
+    }
+    .wcard.sleep .wtitle .ico{ background:#dfd4ff; border-color:#cbbcff; }
+
+    /* Sleep + Active calories 세트 */
+    .stack{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .wcard.sleep .bar{
+      background:#3b2a6f;  /* 보라 */
+    }
+    
+    /* Sleep 카드 높이: 아래 mini-card가 따로 있으니 조금 줄여도 됨 */
+    .wcard.sleep{
+      min-height:120px;
+    }
+
+    /* ✅ 별도의 Active calories 카드 */
+    .mini-card{
+      background:#fff;
+      border:1px solid #e9e9e9;
+      border-radius:12px;
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* 아이콘/텍스트는 이전 그대로 사용 가능 */
+    .cal-ico{
+      width:28px; height:28px;
+      border-radius:8px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#f6f6f6;
+      border:1px solid #e7e7e7;
+      font-size:14px;
+    }
+    .cal-text{ font-size:11px; line-height:1.2; }
+    .cal-text .muted{ color:#888; font-weight:800; }
+
+    /* ===== 3) Training (부분 원 + 80%) ===== */
+    .wcard.training{
+      background:#fff;
+    }
+    .wcard.training .wtitle .ico{ background:#ffe8de; border-color:#ffd3bf; }
+
+    .donut{
+      --p:80; /* 0~100 */
+      width:96px;
+      height:96px;
+      margin:14px auto 0;
+      border-radius:999px;
+      background:
+        conic-gradient(rgba(255,106,42,.65) calc(var(--p) * 1%), #efefef 0);
+      position:relative;
+    }
+    .donut::after{
+      content:"";
+      position:absolute;
+      inset:14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid #f0f0f0;
+    }
+    .donut-hole{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      font-weight:950;
+      color:#111;
+      z-index:1;
+    }
+    .wcard.training{ padding-bottom:18px; }
+
+    /* ===== 4) Water (탱크 + fill + 버튼) ===== */
+    .wcard.water{
+      background:#ffffff;          /* 🔁 카드 배경도 흰색으로 (원래 #eaf7ff) */
+      border-color:#e5e5e5;        /* 🔁 연한 파랑 테두리 → 회색 */
+    }
+    .wcard.water .wtitle .ico{
+      background:#eaf6ff;          /* 🔁 아이콘 배경도 흰색 */
+      border-color:#e5e5e5;
+    }
+
+    /* 물 박스 */
+    .water-tank{
+      position:relative;
+      margin-top:2px;
+      height:64px;
+      border-radius:16px;
+      background:#eaf6ff;          /* ✅ 흰색 유지 */
+      border:0.5px solid #e5e5e5;    /* 🔁 테두리도 회색 톤 */
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* 물 채움(바탕 물색) */
+    .water-fill{
+      position:absolute;
+      left:0; right:0;
+      bottom:0;
+      height:75%;
+      background:#eaf6ff;      
+    }
+
+    /* 웨이브 SVG */
+    .water svg{
+      position:absolute;
+      top:-5px;
+      left:0;
+      width:200%;
+      height:70px;
+      animation: waveMove 6s linear infinite;
+    }
+
+    /* ✅ 웨이브 색: 진한 파랑으로 */
+    .water path{
+      fill:#95CCE3;                /* 🔁 rgba(255,255,255,.45) → 진한 파랑 */
+    }
+
+    /* 웨이브 애니메이션 */
+    @keyframes waveMove{
+      from{ transform:translateX(0); }
+      to{ transform:translateX(-50%); }
+    }
+
+    /* 수치 라벨 */
+    .water-label{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:rgba(255,255,255,.92);
+      padding:6px 12px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:900;
+      color:#111;
+      z-index:2;
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
+    }
+
+
+    .keep{
+      margin-top:auto;
+      width:100%;
+      border:0;
+      border-radius:12px;
+      padding:10px 10px;
+      background:#ffe0d6;
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .widgets{ grid-template-columns:1fr; }
+    }
+
+
+    /* ===== RANKING (Netherlands + list) ===== */
+    .region-row{
+      margin-top:6px;
+      display:flex; justify-content:center; align-items:center; gap:18px;
+    }
+    .region-chip{
+      background:#cfcfcf; color:#111;
+      border-radius:20px; padding:10px 14px;
+      font-size:11px; font-weight:950;
+      min-width:110px; text-align:center;
+    }
+    .region-main{
+      background:#f7d9c2;
+      border-radius:18px;
+      padding:18px 36px;
+      font-weight:950;
+      font-size:22px;
+      min-width:260px;
+      text-align:center;
+      border:1px solid #f0c7a7;
+    }
+    .chev{font-size:30px; font-weight:950; opacity:.75;}
+    .map-wrap{display:flex; justify-content:center; margin-top:18px;}
+    .rank-list{margin-top:14px; border-top:1px dashed #cfcfcf; padding-top:12px;}
+    .rank-row{
+      display:grid;
+      grid-template-columns: 64px 72px 120px 1fr; /* 메달/캐릭터/이름/바/팔 */
+      align-items:center;
+      column-gap:18px;
+      padding:14px 0;
+    }
+
+    /* 1~3 리본 메달 이미지 */
+    .medal-img{
+      width:56px;
+      height:56px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .medal-img img{
+      width:56px;
+      height:auto;
+      display:block;
+    }
+
+    /* 4,5는 숫자 원형 */
+    .medal-num{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      background:#ffb36b;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:950;
+      font-size:28px;
+      color:#fff;
+    }
+
+    /* 캐릭터 */
+    .char-img{
+      width:64px;
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .char-img img{
+      width:64px;
+      height:64px;
+      object-fit:contain; /* png면 contain이 예쁨 */
+      display:block;
+    }
+
+    .rname{
+      font-weight:500;
+      font-size:25px;      /* 1번째 이미지처럼 크게 */
+      letter-spacing:-.5px;
+    }
+
+    /* 바 */
+    .barwrap{
+      position:relative;
+      height:37px;
+      width:530px;   /* bar 전체 길이 */
+      border:1px solid #111;
+      border-radius:999px;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    /* arm을 bar 오른쪽 끝에 고정 */
+    .arm-icon{
+      position:absolute;
+      right:6px;              /* ✅ 오른쪽 정렬 */
+      top:50%;
+      transform:translateY(-50%);
+      width:25px;
+      height:auto;
+      z-index:2;
+    }
+
+    .barfill{
+      height:100%;
+      background:var(--orange);
+      border-radius:999px;
+    }
+
+    .barlabel{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      font-weight:950;
+      color:#000;
+    }
+
+    /* 팔 아이콘 */
+    .arm-img{
+      width:56px;
+      height:42px;
+      border:1px solid #111;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+    }
+    .arm-img img{
+      width:44px;
+      height:auto;
+      display:block;
+    }
+    /* ===== SHOP ===== */
+    .search{
+      margin-top:8px;
+      background:#f2f2f2;
+      border-radius:12px;
+      padding:12px 14px;
+      display:flex; align-items:center; gap:10px;
+      color:#666;
+    }
+    .search input{
+      border:0; outline:0; background:transparent; width:100%;
+      font-size:12px;
+    }
+    .cats{
+      margin-top:18px;
+      display:flex; align-items:center; gap:12px;
+      flex-wrap:wrap;
+    }
+    .catlabel{font-weight:950;}
+    .tag{
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      padding:8px 10px;
+      font-size:12px;
+      background:#fff;
+      display:inline-flex; gap:8px; align-items:center;
+      font-weight:900;
+    }
+    .tag.active{background:#ffe8de; border-color:#ffd3bf;}
+    .shop-title{margin-top:18px; font-weight:950;}
+    .shop-grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+    .pimg{
+      height:130px;
+      background:#f4f4f4;
+      border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .pimg img{width:100%; height:100%; object-fit:cover;}
+    .pbody{padding:10px 10px 12px;}
+    .off{
+      position:absolute; top:10px; left:10px;
+      background:#ff3b3b; color:#fff; font-weight:950;
+      font-size:11px; padding:4px 8px; border-radius:999px;
+    }
+    .stars{color:#f4b400; font-size:12px;}
+    .price{margin-top:8px; font-weight:950;}
+    .price .old{color:#bbb; font-size:11px; text-decoration:line-through; margin-left:6px; font-weight:800;}
+    .cartbtn{
+      margin-top:8px;
+      height:30px; padding:0 12px;
+      border-radius:8px; border:0;
+      background:var(--orange); color:#111;
+      font-weight:950; cursor:pointer;
+      display:inline-flex; gap:6px; align-items:center;
+    }
+
+    /* ===== SHOP 상품 썸네일 (연한 네모 박스) ===== */
+
+    #shop .shop-thumb{
+      height: 160px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 연한 주황 네모 */
+    #shop .thumb-bg{
+      width: 95%;
+      height: 95%;
+      background: #FFE6D0;        /* 연한 주황 */
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 상품 이미지 */
+    #shop .thumb-bg img{
+      width: 92%;
+      height: 92%;
+      object-fit: contain;
+    }
+
+
+
+    /* ===== MY ===== */
+    .my-top{
+      display:flex; justify-content:center; align-items:flex-start;
+      gap:18px; flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .pfp{
+      width:92px; height:92px; border-radius:12px;
+      background:#f2f2f2; border:1px solid #e4e4e4;
+      display:flex; align-items:center; justify-content:center;
+      font-size:44px;
+    }
+    .my-email{font-size:12px; color:#333; text-align:center; margin-top:6px;}
+    .chips{
+      display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; justify-content:center;
+    }
+    .chip{
+      background:#ffe8de;
+      border:1px solid #ffd3bf;
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:11px;
+      font-weight:900;
+      min-width:150px;
+    }
+    .addfriends{
+      margin:14px auto 0;
+      display:block;
+      width:min(420px, 92vw);
+      height:34px;
+      border-radius:12px;
+      border:0;
+      background:#f2b493;
+      font-weight:950;
+      cursor:pointer;
+    }
+    .bigcta{
+      margin:18px auto 0;
+      width:min(520px, 92vw);
+      border-radius:18px;
+      background:#f2b493;
+      border:0;
+      padding:18px 16px;
+      font-weight:950;
+      font-size:22px;
+      cursor:pointer;
+      display:flex; justify-content:center; align-items:center; gap:14px;
+    }
+    .my-cards{
+      margin-top:18px;
+      display:grid; grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      width:min(520px, 92vw);
+      margin-left:auto; margin-right:auto;
+    }
+    .note{
+      border-radius:14px;
+      background:#f6e7dc;
+      border:1px solid #f0d2c0;
+      padding:12px;
+      font-size:11px;
+    }
+    .note h4{margin:0 0 8px; font-size:12px; font-weight:950;}
+    .note ul{margin:0; padding-left:16px;}
+    .note li{margin:4px 0;}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .grid3,.widgets,.shop-grid{grid-template-columns:1fr;}
+      .progress-wrap{height:56px;}
+      .progress-text{font-size:24px;}
+      .rank-row{grid-template-columns: 42px 52px 1fr 1.5fr 44px;}
+      .my-cards{grid-template-columns:1fr;}
+    }
+
+    /* ===== Mobile Fix Pack ===== */
+
+    /* SVG가 화면 밖으로 나가지 않게 */
+    .radar-wrap svg,
+    .map-wrap svg{
+      max-width:100%;
+      height:auto;
+      display:block;
+      margin:0 auto;
+    }
+
+    .map-img{
+      width:260px;     /* 스샷처럼 보이게 */
+      max-width:100%;
+      height:auto;
+      display:block;
+    }
+
+    /* 지도 박스 */
+    .map-box{
+      position:relative;
+      width:260px;
+      margin:0 auto;
+    }
+
+    .map-lock, .map-pin{
+      z-index:5; /* 지도 위로 무조건 올라오게 */
+    }
+
+    /* 공통 자물쇠 */
+    .map-lock{
+      position:absolute;
+      width:18px;
+      height:auto;
+    }
+
+    /* 🔒 자물쇠 위치 (퍼센트 기준 → 반응형 안전) */
+    .l1{ top:28%; right:58%; width:20px;} /* 노르트홀란트 주 = North Holland */
+    .l2{ top:12%; right:33%; width:25px;} /* 프리슬란트 주 = Friesland */
+    .l3{ top:50%; right:65%; width:25px;} /* 자위트홀란트 주 = Zuid-Holland */
+    .l4{ top:65%; right:80%; width:25px;} /* 제일란트 주 = Zeeland */
+    .l5{ top:65%; right:46%; width:27px;} /* 노르트브라반트 주 = North Brabant */
+    .l6{ top:77%; right:35%; width:18px;} /* 림뷔르흐 주 = Limburg */
+    .l7{ top:36%; right:42%; width:14px;} /* 플레볼란트 주 = Flevoland */
+    .l8{ top:49%; right:51%; width:16px;} /* 위트레흐트 주 = Utrecht */
+    .l9{ top:38%; right:20%; width:20px;} /* 오버레이설 주 = Overijssel */
+    .l10{ top:22%; right:15%; width:20px;} /* 드렌터 주 = Drenthe */
+    .l11{ top:10%; right:12%; width:16px;} /* 흐로닝언 주 = Groningen */
+
+    /* 📍 핀 */
+    .map-pin{
+      position:absolute;
+      width:45px;
+      height:auto;
+      top:58%;
+      right:18%;
+      transform:translate(-50%, -100%);
+    }
+
+    /* 헤더/메뉴: 모바일에서 줄바꿈/가로스크롤 허용 */
+    .nav{
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .menu{
+      flex-wrap:nowrap;            /* 한 줄 유지 */
+      overflow-x:auto;             /* 가로 스크롤 */
+      -webkit-overflow-scrolling:touch;
+      gap:14px;
+      padding-bottom:4px;
+    }
+    .menu a{ white-space:nowrap; }
+
+    /* 주간 날짜 pill이 많아서 넘칠 수 있음 */
+    @media (max-width:600px){
+      .weekbar{
+        overflow-x:hidden;   /* 스크롤 제거 */
+        justify-content:center;
+        padding-bottom:0;
+      }
+    }
+
+    /* HOME 상단 타이틀이 너무 커서 줄 깨질 수 있음 */
+    @media (max-width: 600px){
+      .dash-title{
+        font-size:22px;
+        line-height:1.2;
+      }
+      .dash-title .mini{ font-size:16px; }
+
+      .container{ width:min(1060px, 92vw); }
+
+      /* workout 카드 내부가 좁으면 스탬프 때문에 깨질 수 있어서 줄바꿈 허용 */
+      .card-body{
+        flex-wrap:wrap;
+        gap:10px;
+      }
+      .stamp{
+        width:60px;
+        height:60px;
+        font-size:11px;
+        margin-top:0;
+      }
+
+      /* ranking 줄이 좁을 때 마지막 아이콘(💪)이 밀려나면 숨김 처리 */
+      .rank-row{
+        grid-template-columns: 40px 44px 1fr 1.2fr;
+      }
+      .rank-row .arm{ display:none; }
+
+      /* widgets는 이미 1열로 가지만, stack도 폭 100% 보장 */
+      .stack{ width:100%; }
+    }
+
+    /* 더 작은 폰(아이폰 SE급) */
+    @media (max-width: 420px){
+      .menu{ gap:10px; font-size:11px; }
+      .pill{ height:28px; padding:0 10px; }
+
+      .progress-text{ font-size:22px; }
+      .progress-knob{ width:46px; height:46px; left:calc(65% - 22px); }
+
+      /* shop 상품 카드 텍스트가 넘치면 줄바꿈 자연스럽게 */
+      .shop-grid .pbody div{ word-break:keep-all; }
+    }
+
+  </style>
+</head>
+
+
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <!-- 로고(좌상단) 클릭 = home -->
+        <a class="brand" href="#home" aria-label="Go Home">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3.2c1.3 0 2.4 1.05 2.4 2.35S13.3 8 12 8s-2.4-1.25-2.4-2.45S10.7 3.2 12 3.2Z" fill="#111"/>
+            <path d="M18.8 6.7c.92.92.85 2.43-.17 3.36-1.02.93-2.54.93-3.46 0-.92-.92-.85-2.43.17-3.36 1.02-.93 2.54-.93 3.46 0Z" fill="#111"/>
+            <path d="M20.8 13c0 1.3-1.25 2.4-2.45 2.4S15.9 14.3 15.9 13s1.25-2.4 2.45-2.4 2.45 1.1 2.45 2.4Z" fill="#111"/>
+            <path d="M18.6 19.5c-.92.92-2.43.85-3.36-.17-.93-1.02-.93-2.54 0-3.46.92-.92 2.43-.85 3.36.17.93 1.02.93 2.54 0 3.46Z" fill="#111"/>
+            <path d="M12 22c-1.3 0-2.4-1.25-2.4-2.45s1.1-2.45 2.4-2.45 2.4 1.25 2.4 2.45S13.3 22 12 22Z" fill="#111"/>
+            <path d="M5.4 19.5c-.92-.92-.85-2.43.17-3.36 1.02-.93 2.54-.93 3.46 0 .92.92.85 2.43-.17 3.36-1.02.93-2.54.93-3.46 0Z" fill="#111"/>
+            <path d="M3.2 13c0-1.3 1.25-2.4 2.45-2.4S8.1 11.7 8.1 13s-1.25 2.4-2.45 2.4S3.2 14.3 3.2 13Z" fill="#111"/>
+            <path d="M5.2 6.7c.92-.92 2.43-.85 3.36.17.93 1.02.93 2.54 0 3.46-.92.92-2.43.85-3.36-.17-.93-1.02-.93-2.54 0-3.46Z" fill="#111"/>
+          </svg>
+          <span class="name">HopFit</span>
+        </a>
+
+        <nav class="menu" aria-label="Main">
+          <a href="#home" data-route="home">Home</a>
+          <a href="#result" data-route="result">Result</a>
+          <a href="#ranking" data-route="ranking">Ranking</a>
+          <a href="#shop" data-route="shop">Shop</a>
+          <a class="pill" href="#my" data-route="my">My</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <main id="home" class="page active">
+    <div class="container page-pad">
+      <div class="dash-title">
+        Name <span class="mini">⚙️</span>
+        Easy to stretch at home, <span class="mini">🏠</span> your<br/>
+        muscle mass 〜 Have another healthy day <span class="mini">≋</span>
+      </div>
+
+      <div class="section-title">Today Plan</div>
+
+      <div class="progress-wrap" style="--p:65" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill"></div>
+
+        <!-- 🐰 바 끝 “바로 앞” -->
+        <img src="./assets/run.png" class="progress-rabbit" alt="rabbit" />
+
+        <div class="progress-text">65%</div>
+      </div>
+
+
+      <div class="subhead">Body Training</div>
+      <div class="subdesc">40 minutes of exercise increases 0.05g of muscle strength !</div>
+
+      <section class="grid3" aria-label="Workout cards">
+        <article class="card">
+          <div class="thumb">
+            <img alt="Push up"
+              src="https://images.unsplash.com/photo-1599058917765-0f7f3f3c1b1b?auto=format&fit=crop&w=1200&q=70">
+            <span class="badge">Intermediate</span>
+          </div>
+          <div class="card-body">
+            <div class="card-info">
+              <h3>Push up</h3>
+              <p>100 Push up a day</p>
+              <a class="link" href="#">Start to action →</a>
+            </div>
+            <div class="stamp">Excellent</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb">
+            <img alt="Sit up"
+              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=70">
+            <span class="badge">Beginner</span>
+          </div>
+          <div class="card-body">
+            <div class="card-info">
+              <h3>Sit up</h3>
+              <p>20 Sit up a day</p>
+              <a class="link" href="#">Start to action →</a>
+            </div>
+            <div class="stamp">Good!</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb">
+            <img alt="Knee push up"
+              src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=70">
+            <span class="badge">Beginner</span>
+          </div>
+          <div class="card-body">
+            <div class="card-info">
+              <h3>Knee push up</h3>
+              <p>20 Sit up a day</p>
+              <a class="link" href="#">Start to action →</a>
+            </div>
+            <div style="width:66px;"></div>
+          </div>
+        </article>
+      </section>
+
+      <div class="divider"></div>
+      <footer>
+        <div class="footer">
+          <div class="foot-left">Contact</div>
+          <div class="social">
+            <a href="#" aria-label="Instagram">⌁</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="X">X</a>
+            <a href="#" aria-label="Mail">✉</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- RESULT -->
+  <main id="result" class="page">
+    <div class="container page-pad">
+      <div class="center-title">July 2025</div>
+      <!-- weekend -->
+      <div class="weekbar" aria-label="Weekly dates">
+        <div class="daypill"><div>S</div><div>10</div></div>
+        <div class="daypill"><div>M</div><div>11</div></div>
+        <div class="daypill active"><div>T</div><div>18</div></div>
+        <div class="daypill"><div>W</div><div>13</div></div>
+        <div class="daypill"><div>T</div><div>14</div></div>
+        <div class="daypill"><div>F</div><div>15</div></div>
+        <div class="daypill"><div>S</div><div>17</div></div>
+        <div class="daypill"><div>S</div><div>18</div></div>
+      </div>
+
+      <div class="result-title">Today Report</div>
+
+      <!-- Radar (간단 SVG)
+      Result 페이지의 오각형 그림 수정하는 부분 -->
+      <div class="radar-wrap">
+        <svg width="340" height="260" viewBox="0 0 340 260" role="img" aria-label="Radar chart">
+          <g transform="translate(170,130)">
+            <!-- grid -->
+            <polygon points="0,-90 78,-25 48,72 -48,72 -78,-25" fill="none" stroke="#cfcfcf" />
+            <polygon points="0,-70 61,-20 38,56 -38,56 -61,-20" fill="none" stroke="#d9d9d9" />
+            <polygon points="0,-50 43,-14 27,40 -27,40 -43,-14" fill="none" stroke="#e3e3e3" />
+            <line x1="0" y1="0" x2="0" y2="-90" stroke="#cfcfcf"/>
+            <line x1="0" y1="0" x2="78" y2="-25" stroke="#cfcfcf"/>
+            <line x1="0" y1="0" x2="48" y2="72" stroke="#cfcfcf"/>
+            <line x1="0" y1="0" x2="-48" y2="72" stroke="#cfcfcf"/>
+            <line x1="0" y1="0" x2="-78" y2="-25" stroke="#cfcfcf"/>
+
+            <!-- filled data -->
+            <polygon points="0,-72 62,-20 34,52 -18,34 -52,-18"
+              fill="rgba(255,106,42,.55)" stroke="rgba(255,106,42,.9)" stroke-width="2"/>
+            <!-- dashed outline -->
+            <polygon points="0,-82 70,-22 40,60 -26,44 -60,-20"
+              fill="none" stroke="rgba(0,0,0,.55)" stroke-dasharray="5 5" stroke-width="2"/>
+          </g>
+
+          <!-- labels -->
+          <text x="170" y="22" text-anchor="middle" font-size="12" fill="#333" font-weight="700">Balance</text>
+          <text x="310" y="95" text-anchor="end" font-size="12" fill="#333" font-weight="700">Flexibility</text>
+          <text x="286" y="225" text-anchor="end" font-size="12" fill="#333" font-weight="700">Coordination</text>
+          <text x="52" y="225" text-anchor="start" font-size="12" fill="#333" font-weight="700">Muscle strength</text>
+          <text x="20" y="90" text-anchor="start" font-size="12" fill="#333" font-weight="700"><tspan x="0" dy="0">Cardiorespiratory</tspan><tspan x="0" dy="12">endurance</tspan></text>
+        </svg>
+      </div>
+
+      <!-- widgets -->
+      <section class="widgets" aria-label="Daily widgets">
+        <div class="wcard hr">
+          <div class="wtitle">
+            <span class="ico">💓</span>
+            <span>Hearth Rate</span>
+          </div>
+
+          <!-- ✅ 하얀 배경 박스 -->
+          <div class="chart-box" aria-hidden="true">
+            <div class="spark wave">
+              <div class="bar" style="--h:20; --y:-5;"></div>
+              <div class="bar" style="--h:50; --y:-5;"></div>
+              <div class="bar" style="--h:30; --y:-5;"></div>
+              <div class="bar" style="--h:25; --y:-5;"></div>
+              <div class="bar" style="--h:40; --y:-5;"></div>
+              <div class="bar" style="--h:50; --y:-5;"></div>
+              <div class="bar" style="--h:15; --y:-5;"></div>
+              <div class="bar" style="--h:20; --y:-5;"></div>
+              <div class="bar" style="--h:30; --y:-5;"></div>
+              <div class="bar" style="--h:25; --y:-5;"></div>
+              <div class="bar" style="--h:35; --y:-5;"></div>
+              <div class="bar" style="--h:50; --y:-5;"></div>
+              <div class="bar" style="--h:40; --y:-5;"></div>
+              <div class="bar" style="--h:45; --y:-5;"></div>
+              <div class="bar" style="--h:30; --y:-5;"></div>
+              <div class="bar" style="--h:20; --y:-5;"></div>
+              <div class="bar" style="--h:30; --y:-5;"></div>
+              <div class="bar" style="--h:40; --y:-5;"></div>
+              <div class="bar" style="--h:30; --y:-5;"></div>
+              <div class="bar" style="--h:20; --y:-5;"></div>
+              <div class="bar" style="--h:35; --y:-5;"></div>
+            </div>
+          </div>
+
+          <div class="bpm">79 Bpm</div>
+        </div>
+
+        <!-- Sleep -->
+        <!-- Sleep + Active calories를 묶는 컨테이너 -->
+        <div class="stack">
+          <!-- Sleep -->
+          <div class="wcard sleep">
+            <div class="wtitle">
+              <span class="ico">🌙</span>
+              <span>Sleep</span>
+            </div>
+
+            <div class="spark sleep-bars" aria-hidden="true">
+              <div class="bar" style="height:12px;"></div>
+              <div class="bar" style="height:22px;"></div>
+              <div class="bar" style="height:40px;"></div>
+              <div class="bar" style="height:50px;"></div>
+              <div class="bar" style="height:36px;"></div>
+              <div class="bar" style="height:14px;"></div>
+              <div class="bar" style="height:28px;"></div>
+              <div class="bar" style="height:12px;"></div>
+              <div class="bar" style="height:26px;"></div>
+              <div class="bar" style="height:16px;"></div>
+              <div class="bar" style="height:30px;"></div>
+              <div class="bar" style="height:50px;"></div>
+              <div class="bar" style="height:32px;"></div>
+              <div class="bar" style="height:40px;"></div>
+              <div class="bar" style="height:25px;"></div>
+              <div class="bar" style="height:30px;"></div>
+              <div class="bar" style="height:45px;"></div>
+              <div class="bar" style="height:15px;"></div>
+              <div class="bar" style="height:20px;"></div>
+              <div class="bar" style="height:40px;"></div>
+              <div class="bar" style="height:35px;"></div>
+              <div class="bar" style="height:25px;"></div>
+              <div class="bar" style="height:35px;"></div>
+              <div class="bar" style="height:20px;"></div>
+            </div>
+          </div>
+
+          <!-- ✅ Active calories: 별도의 작은 카드 -->
+          <div class="mini-card">
+            <span class="cal-ico">🕒</span>
+            <span class="cal-text">
+              <span class="muted">Active calories</span><br />
+              <strong>645 Cal</strong>
+            </span>
+          </div>
+        </div>
+
+
+        <!-- Training time -->
+        <div class="wcard training">
+          <div class="wtitle">
+            <span class="ico">⏱️</span>
+            <span>Training time</span>
+          </div>
+
+          <!-- ✅ 80%만 채워진 “부분 원” -->
+          <div class="donut" style="--p:80" aria-hidden="true">
+            <div class="donut-hole">80%</div>
+          </div>
+        </div>
+
+        <!-- Water -->
+        <div class="wcard water">
+          <div class="wtitle">
+            <span class="ico">💧</span>
+            <span>Water</span>
+          </div>
+
+          <!-- ✅ 물 모양 박스 -->
+          <!-- Water -->
+          <div class="water-tank" aria-hidden="true">
+            <!-- 물(웨이브) -->
+            <div class="water">
+              <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+                <path
+                  d="M0 20
+                    Q 20 10 40 20
+                    T 80 20
+                    T 120 20
+                    T 160 20
+                    T 200 20
+                    V 40
+                    H 0
+                    Z" />
+              </svg>
+            </div>
+
+            <!-- 수치 박스 -->
+            <div class="water-label">6/8 Cups</div>
+          </div>
+
+
+          <button class="keep">Keep it Up! 💪</button>
+        </div>
+
+      </section>
+
+      <div class="divider"></div>
+      <footer>
+        <div class="footer">
+          <div class="foot-left">Contact</div>
+          <div class="social">
+            <a href="#" aria-label="Instagram">⌁</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="X">X</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- RANKING -->
+  <main id="ranking" class="page">
+    <div class="container page-pad">
+      <div class="center-title">&lt; Netherlands &gt;</div>
+
+      <div class="region-row" aria-label="Region selector">
+        <div class="region-chip">North Brabant</div>
+        <div class="chev">«</div>
+        <div class="region-main">Gelderland</div>
+        <div class="chev">»</div>
+        <div class="region-chip">Overijssel</div>
+      </div>
+
+      <div class="map-wrap" aria-label="Netherlands map">
+        <div class="map-box">
+          <!-- 지도 -->
+          <img src="./assets/map.png" alt="Netherlands map" class="map-img">
+
+          <!-- 자물쇠 -->
+          <img src="./assets/lock.png" class="map-lock l1" alt="">
+          <img src="./assets/lock.png" class="map-lock l2" alt="">
+          <img src="./assets/lock.png" class="map-lock l3" alt="">
+          <img src="./assets/lock.png" class="map-lock l4" alt="">
+          <img src="./assets/lock.png" class="map-lock l5" alt="">
+          <img src="./assets/lock.png" class="map-lock l6" alt="">
+          <img src="./assets/lock.png" class="map-lock l7" alt="">
+          <img src="./assets/lock.png" class="map-lock l8" alt="">
+          <img src="./assets/lock.png" class="map-lock l9" alt="">
+          <img src="./assets/lock.png" class="map-lock l10" alt="">
+          <img src="./assets/lock.png" class="map-lock l11" alt="">
+
+          <!-- 핀 -->
+          <img src="./assets/location.png" class="map-pin" alt="">
+        </div>
+      </div>
+
+      <!-- 플레이의 링크의 이미지 -->
+      <div class="rank-list" aria-label="Ranking list">
+        <!-- 1 -->
+        <div class="rank-row">
+          <div class="medal-img">
+            <img src="./assets/medal-1.png" alt="1st">
+          </div>
+
+          <div class="char-img">
+            <img src="./assets/turtle.png" alt="Luca">
+          </div>
+
+          <div class="rname">Luca</div>
+
+          <div class="barwrap">
+            <div class="barfill" style="width:90%"></div>
+            <div class="barlabel">90kg</div>
+
+            <!-- ✅ arm을 bar 안으로 -->
+            <img src="./assets/arm.png" class="arm-icon" alt="">
+          </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="rank-row">
+          <div class="medal-img">
+            <img src="./assets/medal-2.png" alt="2nd">
+          </div>
+
+          <div class="char-img">
+            <img src="./assets/worker.png" alt="Jenny">
+          </div>
+
+          <div class="rname">Jenny</div>
+
+          <div class="barwrap">
+            <div class="barfill" style="width:85%"></div>
+            <div class="barlabel">85kg</div>
+
+            <!-- ✅ arm을 bar 안으로 -->
+            <img src="./assets/arm.png" class="arm-icon" alt="">
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="rank-row">
+          <div class="medal-img">
+            <img src="./assets/medal-3.png" alt="3rd">
+          </div>
+
+          <div class="char-img">
+            <img src="./assets/boy.png" alt="Alex">
+          </div>
+
+          <div class="rname">Alex</div>
+
+          <div class="barwrap">
+            <div class="barfill" style="width:70%"></div>
+            <div class="barlabel">70kg</div>
+
+            <!-- ✅ arm을 bar 안으로 -->
+            <img src="./assets/arm.png" class="arm-icon" alt="">
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="rank-row">
+          <div class="medal-num">4</div>
+
+          <div class="char-img">
+            <img src="./assets/frog.png" alt="Emily">
+          </div>
+
+          <div class="rname">Emily</div>
+
+          <div class="barwrap">
+            <div class="barfill" style="width:60%"></div>
+            <div class="barlabel">60kg</div>
+
+            <!-- ✅ arm을 bar 안으로 -->
+            <img src="./assets/arm.png" class="arm-icon" alt="">
+          </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="rank-row">
+          <div class="medal-num">5</div>
+
+          <div class="char-img">
+            <img src="./assets/bee.png" alt="Daniel">
+          </div>
+
+          <div class="rname">Daniel</div>
+
+          <div class="barwrap">
+            <div class="barfill" style="width:50%"></div>
+            <div class="barlabel">50kg</div>
+
+            <!-- ✅ arm을 bar 안으로 -->
+            <img src="./assets/arm.png" class="arm-icon" alt="">
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <footer>
+        <div class="footer">
+          <div class="foot-left">Contact</div>
+          <div class="social">
+            <a href="#" aria-label="Instagram">⌁</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="X">X</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- SHOP -->
+  <main id="shop" class="page">
+    <div class="container page-pad">
+      <div class="search" role="search">
+        <span aria-hidden="true">🔍</span>
+        <input placeholder="Search" />
+      </div>
+
+      <div class="cats">
+        <div class="catlabel">Category :</div>
+        <div class="tag active">🥣 Health Food</div>
+        <div class="tag">🍓 Fruit</div>
+        <div class="tag">🥦 Vegetable</div>
+        <div class="tag">🌾 Rice/Grains</div>
+      </div>
+
+      <div class="divider" style="margin-top:12px;"></div>
+
+      <div class="shop-title">Health Food</div>
+
+      <section class="shop-grid" aria-label="Products">
+        <!-- product 1 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-1.png" alt="">
+            </div>
+          </div>
+          <div class="pbody">
+            <div style="font-weight:950;">Vegetable Capsules Extra Virgin Olive Oil</div>
+            <div class="stars">★★★★☆ <span style="color:#666; font-size:11px;">(74)</span></div>
+            <div class="price" style="color:#ff3b3b;">800 coin<span class="old">1000 coin</span></div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+
+        <!-- product 2 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-2.png" alt="">
+            </div>
+          </div>
+
+          <div class="pbody">
+            <div style="font-weight:950;">Mega Vitamin C 3000</div>
+            <div class="stars">★★★★☆ <span style="color:#666; font-size:11px;">(216)</span></div>
+            <div class="price">950 coin</div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+
+        <!-- product 3 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-3.png" alt="">
+            </div>
+          </div>
+
+          <div class="pbody">
+            <div style="font-weight:950;">Glutathione Collagen</div>
+            <div class="stars">★★★★★ <span style="color:#666; font-size:11px;">(+999)</span></div>
+            <div class="price">500 coin</div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+
+        <!-- product 4 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-4.png" alt="">
+            </div>
+          </div>
+
+          <div class="pbody">
+            <div style="font-weight:950;">Probiotics - 10</div>
+            <div class="stars">★★★★☆ <span style="color:#666; font-size:11px;">(129)</span></div>
+            <div class="price">1200 coin</div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+
+        <!-- product 5 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-5.png" alt="">
+            </div>
+          </div>
+
+          <div class="pbody">
+            <div style="font-weight:950;">Protein Bar Greek Yogurt flavor</div>
+            <div class="stars">★★★★☆ <span style="color:#666; font-size:11px;">(415)</span></div>
+            <div class="price" style="color:#ff3b3b;">300 coin<span class="old">500 coin</span></div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+
+        <!-- product 6 -->
+        <article class="card" style="box-shadow:none;">
+          <div class="thumb shop-thumb">
+            <div class="thumb-bg">
+              <img src="./assets/product-6.png" alt="">
+            </div>
+          </div>
+
+          <div class="pbody">
+            <div style="font-weight:950;">Protein Shake Grain flavor</div>
+            <div class="stars">★★★★☆ <span style="color:#666; font-size:11px;">(28)</span></div>
+            <div class="price">650 coin</div>
+            <button class="cartbtn">🛒 CART</button>
+          </div>
+        </article>
+      </section>
+
+      <div class="divider"></div>
+      <footer>
+        <div class="footer">
+          <div class="foot-left">Contact</div>
+          <div class="social">
+            <a href="#" aria-label="Instagram">⌁</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="X">X</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- MY -->
+  <main id="my" class="page">
+    <div class="container page-pad" style="text-align:center;">
+      <div class="my-top">
+        <div>
+          <div class="pfp">🧑‍🦳</div>
+          <div class="my-email">kgeongang@example.com</div>
+        </div>
+
+        <div class="chips">
+          <div class="chip">Zeeland Rank 3rd<br/>Reward - 3000 coin</div>
+          <div class="chip">Wife<br/>Squat 30 Set<br/>Walk 15,000 Step</div>
+        </div>
+      </div>
+
+      <button class="addfriends">+ add friends</button>
+
+      <div class="divider" style="width:min(520px,92vw); margin-left:auto; margin-right:auto;"></div>
+
+      <button class="bigcta">
+        <span style="font-size:30px;">✓</span>
+        <span>JUST DO IT!!!</span>
+      </button>
+
+      <div class="my-cards">
+        <div class="note">
+          <h4>Momentum</h4>
+          <ul>
+            <li>Walk 20,000 Step</li>
+            <li>Running 30 min</li>
+            <li>Squat 20 Set</li>
+          </ul>
+        </div>
+        <div class="note">
+          <h4>Purchase</h4>
+          <ul>
+            <li>Beef 320g</li>
+            <li>Onion 4pcs</li>
+            <li>Carrot 5EA</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <footer>
+        <div class="footer">
+          <div class="foot-left">Contact</div>
+          <div class="social">
+            <a href="#" aria-label="Instagram">⌁</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="X">X</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const routes = ["home","result","ranking","shop","my"];
+
+    function setActiveMenu(route){
+      document.querySelectorAll("[data-route]").forEach(a=>{
+        a.classList.toggle("active", a.dataset.route === route);
+      });
+    }
+
+    function showPage(route){
+      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+      const target = document.getElementById(route);
+      if(target) target.classList.add("active");
+      setActiveMenu(route);
+    }
+
+    function route(){
+      const hash = (location.hash || "#home").replace("#","");
+      showPage(routes.includes(hash) ? hash : "home");
+    }
+
+    window.addEventListener("hashchange", route);
+    window.addEventListener("DOMContentLoaded", route);
+  </script>
+</body>
+</html>
